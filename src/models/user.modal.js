@@ -1,6 +1,6 @@
 import mongoose,{Schema} from "mongoose";
 import jwt from "jsonwebtoken"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 const userSchema = new Schema(
 {
@@ -33,12 +33,12 @@ const userSchema = new Schema(
       },
       coverImage:{
         type:String,
-        required:true
+       // required:true
       },
-      watchHistory:{
-        type:Schema.Types.Objectid ,
+      watchHistory: [{
+        type:Schema.Types.ObjectId ,
         ref: "Video"
-      },
+      } ],
       password:{
         type:String,
         required:[true,'password is required']
@@ -52,10 +52,11 @@ const userSchema = new Schema(
 )
 
 userSchema.pre("save" ,async function(next) {
-if(!this.isModified("password")) return next();
+if(!this.isModified("password"))
+   return next();
 
 this.password = await bcrypt.hash(this.password,10)
-next()
+
 })
 userSchema.methods.IsPasswordCorrect = async function(password) {
   return await bcrypt.compare(password,this.password)
@@ -69,9 +70,9 @@ userSchema.methods.generateAccessToken = function(){
       userName:this.userName,
       fullName:this.fullName
     },
-    process.env.Access_Token_SECRET,
+    process.env.ACCESS_TOKEN_SECRET,
     {
-      expiesIn: process.env.ACCESS_TOKEN_EXPIRY
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     }
   )
 }

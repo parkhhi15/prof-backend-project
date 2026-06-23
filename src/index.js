@@ -17,13 +17,15 @@ connectDB()
     app.listen(process.env.PORT|| 8000, () => {
         console.log(`Server is running at port : ${process.env.PORT}`);
     })
+
+    
+
 })
     .catch((err) => {
         console.log("MONGO db connectio failed !!! ", err);
     })
 
-
-
+// In your app.js or index.js
 
 
 
@@ -50,7 +52,8 @@ const app = express()
    
    
    
-        } catch (error) {
+        } 
+         catch (error) {
         console.error("ERROR: ",error)
         throw error
     }
